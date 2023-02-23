@@ -2,8 +2,39 @@ import os
 import json
 import openpyxl
 
-def update_additions():
-    pass
+def update_additions(user_id):
+    accounts_file = os.path.join(os.getcwd(), 'data', 'accounts.json')
+    additions_file = generate_user_path(user_id, "Price File Additions.xlsx")
+    nacet_path = get_nacet_path()
+
+    # Load the accounts data
+    with open(accounts_file, 'r') as f:
+        accounts_data = json.load(f)
+
+    # Find the accounts that belong to the user
+    user_accounts = [account for account in accounts_data.values() if account["owner"] == user_id]
+
+    # Check if the additions file exists
+    if not os.path.exists(additions_file):
+        print(f"Price File Additions for {user_id} does not exist.")
+        return
+
+    # Open the additions file
+    wb = openpyxl.load_workbook(additions_file)
+    sheet = wb.active
+
+    # Get the account numbers from column A
+    account_numbers = [cell.value for cell in sheet['A']]
+
+    # Find the user's account numbers in the additions file
+    user_account_numbers = [acc["ID"] for acc in user_accounts if acc["ID"] in account_numbers]
+
+    # Print the number of product codes awaiting to be added to the user's price files
+    if user_account_numbers:
+        print(f"There are {len(user_account_numbers)} product codes awaiting to be added to the price files for {user_id}.")
+    else:
+        print(f"No product codes found for {user_id}.")
+
 
 def update_price_files():
     pass
@@ -213,40 +244,18 @@ def export_data():
 
     print(f"Data exported to {wb_file}!")
 
-def update_additions(user_id):
-    nacet_path = get_nacet_path()
-    user_path = generate_user_path(user_id)
-    additions_file = os.path.join(nacet_path, user_path, "Price File Additions.xlsx")
-    if not os.path.exists(additions_file):
-        print(f"Price File Additions file does not exist for user {user_id}")
-        return
-    wb = openpyxl.load_workbook(additions_file)
-    # Perform updates to the workbook as needed
-    # ...
-    wb.save(additions_file)
-    print(f"Price File Additions file for user {user_id} has been updated.")
-
-def generate_user_path(user_id):
-    filename = os.path.join(os.getcwd(), 'data', 'estimators.json')
-
+def generate_user_path(first_name, last_name):
+    filename = os.path.join(os.getcwd(), 'data', 'generalpaths.json')
     with open(filename, 'r') as f:
         data = json.load(f)
+        base_path = data['nacet']
+    
+    user_path = os.path.join(base_path, 'Estimators', f"{first_name} {last_name}")
+    
+    return user_path
 
-    if user_id not in data:
-        raise ValueError(f"User ID {user_id} not found in estimators.json")
-
-    user_data = data[user_id]
-    first_name = user_data['first_name']
-    last_name = user_data['last_name']
-
-    nacet_path = get_nacet_path()
-
-    return os.path.join(nacet_path, 'Estimators', f"{first_name} {last_name}")
 
 def get_nacet_path():
-    filename = os.path.join(os.getcwd(), 'data', 'generalpaths.json')
-
-    with open(filename, 'r') as f:
-        data = json.load(f)
-
+    with open('generalpaths.json', 'r') as file:
+        data = json.load(file)
     return data['nacet']
