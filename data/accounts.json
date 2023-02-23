@@ -1,37 +1,10 @@
 {
-  "TEST": {
-    "owner": "AP",
-    "name": "Python Test Account",
-    "vertical": "Social Housing",
-    "copper_file": false,
-    "price_file_type": "SLP"
-  },
   "7480K37": {
-    "owner": "AP",
+    "owner_id": "AP",
     "name": "Homeserve",
     "vertical": "Private & Domestic",
-    "copper_file": true,
-    "price_file_type": "SLP"
-  },
-  "AVANT": {
-    "owner": "AP",
-    "name": "Avant Homes",
-    "vertical": "Private & Domestic",
     "copper_file": false,
-    "price_file_type": "Margin"
-  },
-  "0191AK39": {
-    "owner": "GC",
-    "name": "Test Account Two",
-    "vertical": "Social Housing",
-    "copper_file": false,
-    "price_file_type": "Margin"
-  },
-  "938393A": {
-    "owner": "GC",
-    "name": "Test Account Three",
-    "vertical": "New Build",
-    "copper_file": false,
-    "price_file_type": "SLP"
+    "price_file_type": "SLP",
+    "price_file_path": "\\\\WUKRLS00FP001\\RLS_Data\\Departments\\NACET\\Price File Maintenance\\Accounts\\Private & Domestic\\Homeserve\\7480K37 - Homeserve Master.xlsx"
   }
 }

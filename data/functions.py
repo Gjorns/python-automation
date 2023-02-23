@@ -8,6 +8,94 @@ def update_additions():
 def update_price_files():
     pass
 
+def create_new_price_file(owner_id):
+    # Load existing data from accounts.json
+    accounts_file = os.path.join(os.getcwd(), 'data', 'accounts.json')
+    with open(accounts_file, 'r') as f:
+        data = json.load(f)
+
+    # Get nacet path from generalpaths.json
+    generalpaths_file = os.path.join(os.getcwd(), 'data', 'generalpaths.json')
+    with open(generalpaths_file, 'r') as f:
+        general_paths = json.load(f)
+    nacet_path = general_paths['nacet']
+
+    # Get unique ID for the price file
+    while True:
+        unique_id = input("Enter unique ID of the price file: ")
+        if unique_id in data:
+            print(f"Price file with ID {unique_id} already exists. Please try again.")
+            continue
+        else:
+            break
+
+    # Get name of the price file
+    while True:
+        name = input("Enter name of the price file: ")
+        name_exists = any(val['name'] == name for val in data.values())
+        if name_exists:
+            print(f"Price file with name {name} already exists. Please try again.")
+            continue
+        else:
+            break
+
+    # Get vertical for the price file
+    print("Select the vertical for the price file:")
+    print("1. New build")
+    print("2. Social Housing")
+    print("3. Private & Domestic")
+    while True:
+        vertical_input = input()
+        if vertical_input not in ['1', '2', '3']:
+            print("Invalid option. Please try again.")
+            continue
+        else:
+            vertical = ['New build', 'Social Housing', 'Private & Domestic'][int(vertical_input)-1]
+            break
+
+    # Check if the price file has a copper file
+    while True:
+        copper_file_input = input("Does the price file have a copper file? (y/n): ")
+        if copper_file_input.lower() == 'y':
+            copper_file = True
+            break
+        elif copper_file_input.lower() == 'n':
+            copper_file = False
+            break
+        else:
+            print("Invalid option. Please try again.")
+            continue
+
+    # Get the price file type
+    print("Select the price file type:")
+    print("1. SLP")
+    print("2. Margin sheet")
+    while True:
+        price_file_type_input = input()
+        if price_file_type_input not in ['1', '2']:
+            print("Invalid option. Please try again.")
+            continue
+        else:
+            price_file_type = ['SLP', 'Margin sheet'][int(price_file_type_input)-1]
+            break
+
+    # Generate the price file path
+    price_file_path = os.path.join(nacet_path, "Accounts", vertical, name, f"{unique_id} - {name} Master.xlsx")
+
+    # Store the new data in accounts.json
+    data[unique_id] = {
+        "owner_id": owner_id,
+        "name": name,
+        "vertical": vertical,
+        "copper_file": copper_file,
+        "price_file_type": price_file_type,
+        "price_file_path": price_file_path
+    }
+    with open(accounts_file, 'w') as f:
+        json.dump(data, f, indent=2)
+
+    print(f"Price file with ID {unique_id} is created.")
+
 def list_all_accounts(user_id):
     filename = os.path.join(os.getcwd(), 'data', 'accounts.json')
 
@@ -16,7 +104,7 @@ def list_all_accounts(user_id):
 
     user_accounts = []
     for unique_id, account in data.items():
-        if account["owner"] == user_id:
+        if account["owner_id"] == user_id:
             account["ID"] = unique_id
             user_accounts.append(account)
 
@@ -26,77 +114,6 @@ def list_all_accounts(user_id):
 
     for account in user_accounts:
         print(f"{account['ID']}\t{account['name']}\t{account['vertical']}\t{account['price_file_type']}")
-
-def create_new_price_file(owner_id):
-    filename = os.path.join(os.getcwd(), 'data', 'accounts.json')
-
-    with open(filename, 'r') as f:
-        data = json.load(f)
-
-    while True:
-        unique_id = input("Enter unique ID of the price file: ")
-        if unique_id == "exit":
-            return
-        elif unique_id in data:
-            print(f"Price file with ID {unique_id} already exists. Please try again.")
-            continue
-
-        name = input("Enter name of the price file: ")
-        if name == "exit":
-            return
-        elif any(d["name"] == name for d in data.values()):
-            print(f"Price file with name {name} already exists. Please try again.")
-            continue
-
-        print("\nSelect the vertical:")
-        print("1. New Build")
-        print("2. Social Housing")
-        print("3. Private & Domestic")
-        vertical_choice = input("Enter your choice: ")
-        if vertical_choice == "1":
-            vertical = "New Build"
-        elif vertical_choice == "2":
-            vertical = "Social Housing"
-        elif vertical_choice == "3":
-            vertical = "Private & Domestic"
-        elif vertical_choice == "exit":
-            return
-        else:
-            print("Invalid choice. Please try again.")
-            continue
-
-        copper_file_choice = input("Does it have copper file? (y/n): ")
-        if copper_file_choice == "y":
-            copper_file = True
-        elif copper_file_choice == "n":
-            copper_file = False
-        elif copper_file_choice == "exit":
-            return
-        else:
-            print("Invalid choice. Please try again.")
-            continue
-
-        print("\nSelect the price file type:")
-        print("1. Margin")
-        print("2. SLP")
-        price_file_choice = input("Enter your choice: ")
-        if price_file_choice == "1":
-            price_file_type = "Margin"
-        elif price_file_choice == "2":
-            price_file_type = "SLP"
-        elif price_file_choice == "exit":
-            return
-        else:
-            print("Invalid choice. Please try again.")
-            continue
-
-        data[unique_id] = {"owner": owner_id, "name": name, "vertical": vertical, "copper_file": copper_file, "price_file_type": price_file_type}
-
-        with open(filename, 'w') as f:
-            json.dump(data, f, indent=2)
-
-        print(f"\nPrice file with ID {unique_id} and name {name} has been created.")
-        break
 
 def create_new_user():
     estimators_file = os.path.join(os.getcwd(), 'data', 'estimators.json')
@@ -204,7 +221,7 @@ def export_data():
     with open(accounts_file, 'r') as f:
         data = json.load(f)
         for unique_id, price_file in data.items():
-            row = [unique_id, price_file['owner'], price_file['name'], price_file['vertical'], price_file['copper_file'], price_file['price_file_type']]
+            row = [unique_id, price_file['owner_id'], price_file['name'], price_file['vertical'], price_file['copper_file'], price_file['price_file_type']]
             default_sheet.append(row)
 
     wb.save(wb_file)
