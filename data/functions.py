@@ -1,9 +1,79 @@
 import os
 import json
 import openpyxl
+import calendar
+import datetime
 
-def update_additions():
-    pass
+def update_additions(owner_id):
+    # get estimator path from estimators.json
+    estimators_file = os.path.join(os.getcwd(), 'data', 'estimators.json')
+    with open(estimators_file, 'r') as f:
+        estimators = json.load(f)
+    estimator_path = estimators[owner_id]['estimator_path']
+
+    # get price file path from accounts.json
+    accounts_file = os.path.join(os.getcwd(), 'data', 'accounts.json')
+    with open(accounts_file, 'r') as f:
+        accounts = json.load(f)
+    account = accounts[owner_id]
+    price_file_path = account['price_file_path']
+
+    # get current month name
+    current_month_name = datetime.datetime.now().strftime("%B")
+
+    # determine which columns to update based on current month
+    if current_month_name == "January":
+        update_columns = ['G', 'J']
+    elif current_month_name == "February":
+        update_columns = ['J', 'M']
+    elif current_month_name == "March":
+        update_columns = ['M', 'P']
+    elif current_month_name == "April":
+        update_columns = ['P', 'S']
+    elif current_month_name == "May":
+        update_columns = ['S', 'V']
+    elif current_month_name == "June":
+        update_columns = ['V', 'Y']
+    elif current_month_name == "July":
+        update_columns = ['Y', 'AB']
+    elif current_month_name == "August":
+        update_columns = ['AB', 'AE']
+    elif current_month_name == "September":
+        update_columns = ['AE', 'AH']
+    elif current_month_name == "October":
+        update_columns = ['AH', 'AK']
+    elif current_month_name == "November":
+        update_columns = ['AK', 'AN']
+    else:
+        update_columns = ['AN', 'G']
+
+    # open price file additions excel file and get unique values in column A
+    price_file_additions_path = os.path.join(estimator_path, 'Price File Additions.xlsx')
+    wb_additions = openpyxl.load_workbook(price_file_additions_path)
+    ws_additions = wb_additions.active
+    account_numbers = set([cell.value for cell in ws_additions['A'][1:]])
+
+    # open price file and update columns with values from price file additions
+    wb_price_file = openpyxl.load_workbook(price_file_path)
+    ws_price_file = wb_price_file.active
+    last_row = ws_price_file.max_row
+
+    for account_number in account_numbers:
+        if account_number in accounts:
+            account = accounts[account_number]
+            price_file_path = account['price_file_path']
+            wb_price_file = openpyxl.load_workbook(price_file_path)
+            ws_price_file = wb_price_file.active
+            for col in update_columns:
+                for i in range(2, last_row + 1):
+                    if ws_price_file['A'][i].value == account_number:
+                        new_price = ws_additions['C'][ws_additions['A'].index(account_number)].value
+                        if new_price is not None:
+                            new_price = float(f'{new_price:.2f}')
+                            ws_price_file[f'{col}{i}'].value = new_price
+
+            wb_price_file.save(price_file_path)
+            print(f'Price file for account {account_number} updated with values from price file additions.')
 
 def update_price_files():
     pass
