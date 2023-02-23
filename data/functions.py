@@ -100,10 +100,13 @@ def create_new_price_file(owner_id):
 
 
 def create_new_user():
-    filename = os.path.join(os.getcwd(), 'data', 'estimators.json')
-
-    with open(filename, 'r') as f:
+    estimators_file = os.path.join(os.getcwd(), 'data', 'estimators.json')
+    with open(estimators_file, 'r') as f:
         data = json.load(f)
+
+    generalpaths_file = os.path.join(os.getcwd(), 'data', 'generalpaths.json')
+    with open(generalpaths_file, 'r') as f:
+        general_paths = json.load(f)
 
     while True:
         first_name = input("Enter your first name (type 'exit' to cancel): ")
@@ -127,10 +130,17 @@ def create_new_user():
             continue
         else:
             data[unique_id] = {"first_name": first_name, "last_name": last_name}
-            with open(filename, 'w') as f:
+            with open(estimators_file, 'w') as f:
                 json.dump(data, f, indent=2)
+                
+            # Store user's path based on their first and last name
+            first_last_name = f"{first_name} {last_name}"
+            user_path = os.path.join(general_paths["nacet"], "Estimators", first_last_name)
+            os.makedirs(user_path, exist_ok=True)
+
             print(f"User {unique_id} is created.")
             break
+
 
 
 def remove_user():
@@ -182,29 +192,33 @@ def export_data():
     estimators_file = os.path.join(os.getcwd(), 'data', 'estimators.json')
     wb_file = os.path.join(os.getcwd(), 'data', 'exported_data.xlsx')
 
-    # Delete the Excel file if it already exists
     if os.path.exists(wb_file):
         os.remove(wb_file)
 
-    # Create a new Excel workbook
     wb = openpyxl.Workbook()
 
-    # Rename the default sheet to "accounts"
     default_sheet = wb.active
     default_sheet.title = "accounts"
 
-    # Write headers to the worksheet
     headers = ['Unique ID', 'Owner', 'Name', 'Vertical', 'Copperfile', 'Pricefiletype']
     default_sheet.append(headers)
 
-    # Write data from accounts.json to the worksheet
     with open(accounts_file, 'r') as f:
         data = json.load(f)
         for unique_id, price_file in data.items():
             row = [unique_id, price_file['owner'], price_file['name'], price_file['vertical'], price_file['copper_file'], price_file['price_file_type']]
             default_sheet.append(row)
 
-    # Save the Excel file
     wb.save(wb_file)
 
     print(f"Data exported to {wb_file}!")
+
+def generate_user_path(first_name, last_name):
+    filename = os.path.join(os.getcwd(), 'data', 'generalpaths.json')
+    with open(filename, 'r') as f:
+        data = json.load(f)
+        base_path = data['nacet']
+    
+    user_path = os.path.join(base_path, 'Estimators', f"{first_name} {last_name}")
+    
+    return user_path
