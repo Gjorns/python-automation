@@ -1,23 +1,9 @@
 {
-  "7480K37": {
+  "TEST": {
     "owner": "AP",
-    "name": "Homeserve",
-    "vertical": "Private & Domestic",
+    "name": "Python Test Account",
+    "vertical": "Social Housing",
     "copper_file": false,
-    "price_file_type": "SLP"
-  },
-  "AVANT": {
-    "owner": "AP",
-    "name": "Avant Homes",
-    "vertical": "Private & Domestic",
-    "copper_file": false,
-    "price_file_type": "Margin"
-  },
-  "77363B3": {
-    "owner": "GC",
-    "name": "Test Account",
-    "vertical": "New Build",
-    "copper_file": true,
     "price_file_type": "SLP"
   }
 }

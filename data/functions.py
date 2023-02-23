@@ -213,12 +213,40 @@ def export_data():
 
     print(f"Data exported to {wb_file}!")
 
-def generate_user_path(first_name, last_name):
-    filename = os.path.join(os.getcwd(), 'data', 'generalpaths.json')
+def update_additions(user_id):
+    nacet_path = get_nacet_path()
+    user_path = generate_user_path(user_id)
+    additions_file = os.path.join(nacet_path, user_path, "Price File Additions.xlsx")
+    if not os.path.exists(additions_file):
+        print(f"Price File Additions file does not exist for user {user_id}")
+        return
+    wb = openpyxl.load_workbook(additions_file)
+    # Perform updates to the workbook as needed
+    # ...
+    wb.save(additions_file)
+    print(f"Price File Additions file for user {user_id} has been updated.")
+
+def generate_user_path(user_id):
+    filename = os.path.join(os.getcwd(), 'data', 'estimators.json')
+
     with open(filename, 'r') as f:
         data = json.load(f)
-        base_path = data['nacet']
-    
-    user_path = os.path.join(base_path, 'Estimators', f"{first_name} {last_name}")
-    
-    return user_path
+
+    if user_id not in data:
+        raise ValueError(f"User ID {user_id} not found in estimators.json")
+
+    user_data = data[user_id]
+    first_name = user_data['first_name']
+    last_name = user_data['last_name']
+
+    nacet_path = get_nacet_path()
+
+    return os.path.join(nacet_path, 'Estimators', f"{first_name} {last_name}")
+
+def get_nacet_path():
+    filename = os.path.join(os.getcwd(), 'data', 'generalpaths.json')
+
+    with open(filename, 'r') as f:
+        data = json.load(f)
+
+    return data['nacet']
