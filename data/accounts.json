@@ -5,5 +5,33 @@
     "vertical": "Social Housing",
     "copper_file": false,
     "price_file_type": "SLP"
+  },
+  "7480K37": {
+    "owner": "AP",
+    "name": "Homeserve",
+    "vertical": "Private & Domestic",
+    "copper_file": true,
+    "price_file_type": "SLP"
+  },
+  "AVANT": {
+    "owner": "AP",
+    "name": "Avant Homes",
+    "vertical": "Private & Domestic",
+    "copper_file": false,
+    "price_file_type": "Margin"
+  },
+  "0191AK39": {
+    "owner": "GC",
+    "name": "Test Account Two",
+    "vertical": "Social Housing",
+    "copper_file": false,
+    "price_file_type": "Margin"
+  },
+  "938393A": {
+    "owner": "GC",
+    "name": "Test Account Three",
+    "vertical": "New Build",
+    "copper_file": false,
+    "price_file_type": "SLP"
   }
 }

@@ -1,2 +1,22 @@
 {
+  "SW": {
+    "first_name": "Simon",
+    "last_name": "Wade",
+    "estimator_path": "\\\\WUKRLS00FP001\\RLS_Data\\Departments\\NACET\\Price File Maintenance\\Estimators\\Simon Wade"
+  },
+  "AP": {
+    "first_name": "Andrei",
+    "last_name": "Polin",
+    "estimator_path": "\\\\WUKRLS00FP001\\RLS_Data\\Departments\\NACET\\Price File Maintenance\\Estimators\\Andrei Polin"
+  },
+  "GC": {
+    "first_name": "Gary",
+    "last_name": "Cook",
+    "estimator_path": "\\\\WUKRLS00FP001\\RLS_Data\\Departments\\NACET\\Price File Maintenance\\Estimators\\Gary Cook"
+  },
+  "PK": {
+    "first_name": "Pardip",
+    "last_name": "Kandola",
+    "estimator_path": "\\\\WUKRLS00FP001\\RLS_Data\\Departments\\NACET\\Price File Maintenance\\Estimators\\Pardip Kandola"
+  }
 }
