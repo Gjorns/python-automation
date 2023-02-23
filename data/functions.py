@@ -129,13 +129,14 @@ def create_new_user():
             continue
         else:
             data[unique_id] = {"first_name": first_name, "last_name": last_name}
+
+            # Use os.path.join() to construct the path using the appropriate directory separator
+            estimator_path = os.path.join(general_paths["nacet"], "Estimators", f"{first_name} {last_name}")
+            os.makedirs(estimator_path, exist_ok=True)
+            data[unique_id]["estimator_path"] = estimator_path
+
             with open(estimators_file, 'w') as f:
                 json.dump(data, f, indent=2)
-                
-            # Store user's path based on their first and last name
-            first_last_name = f"{first_name} {last_name}"
-            user_path = os.path.join(general_paths["nacet"], "Estimators", first_last_name)
-            os.makedirs(user_path, exist_ok=True)
 
             print(f"User {unique_id} is created.")
             break
