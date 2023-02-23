@@ -80,7 +80,7 @@ def create_new_price_file(owner_id):
             break
 
     # Generate the price file path
-    price_file_path = os.path.join(nacet_path, "Accounts", vertical, name, f"{unique_id} - {name} Master.xlsx")
+    price_file_path = os.path.join(nacet_path, "Accounts", vertical, name, "Master Price File" , f"{unique_id} - {name} Master.xlsx")
 
     # Store the new data in accounts.json
     data[unique_id] = {
